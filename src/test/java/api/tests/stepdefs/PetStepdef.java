@@ -7,17 +7,11 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import swagger.pet.store.model.Order;
-import swagger.pet.store.model.Order.StatusEnum;
 import swagger.pet.store.model.Pet;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 /**
  * @author Jovana Milanovic (j.milanovic@stresstest.rs)
@@ -58,7 +52,7 @@ public class PetStepdef {
     @When("^[Pp]et is removed from the pet store$")
     public void removePet() {
         final Pet pet = storage.getLastPet();
-        final boolean isPetDeleted = petServiceProxy.removePet(pet);
+        final boolean isPetDeleted = petServiceProxy.removePet(pet.getId());
 
         assertThat(isPetDeleted).as("Pet is not deleted!").isTrue();
 
@@ -70,44 +64,5 @@ public class PetStepdef {
         final Pet pet = storage.getLastPet();
         final String actualErrorMessage = petServiceProxy.getUnavailablePet(pet.getId());
         assertThat(actualErrorMessage).as("Pet is available in the pet store!").isEqualTo("Pet not found");
-    }
-
-
-    @When("^user place[sd] order for a pet with quantity of (\\d+) with status (placed|approved|delivered)$")
-    public void orderPet(final int quantity, final String statusString) {
-        final Pet pet = storage.getLastPet();
-        final OffsetDateTime shipDate = OffsetDateTime.from(LocalDateTime.now().atOffset(ZoneOffset.UTC).withNano(0));
-
-        final Order order = new Order();
-
-        StatusEnum status = ("placed".equals(statusString)) ? StatusEnum.PLACED
-                : ("approved".equals(statusString)) ? StatusEnum.APPROVED
-                : ("delivered".equals(statusString)) ? StatusEnum.DELIVERED : null;
-
-        order.setId(ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
-        order.setPetId(pet.getId());
-        order.status(status);
-        order.setComplete(false);
-        order.setQuantity(quantity);
-        order.setShipDate(shipDate);
-
-        storage.getOrders().add(order);
-
-        petServiceProxy.placeAnOrderForPet(order);
-    }
-
-    @Then("^[Oo]rder (?:will be|is)? placed$")
-    public void validateOrderIsPlaced() {
-        final Order expectedOrder = storage.getLastOrder();
-        final Order actualOrder = petServiceProxy.getOrder(expectedOrder.getId());
-
-        assertSoftly(softly -> {
-            softly.assertThat(actualOrder.getId()).as("Order id is not correct!").isEqualTo(expectedOrder.getId());
-            softly.assertThat(actualOrder.getPetId()).as("Oder pet ID is not correct!").isEqualTo(expectedOrder.getPetId());
-            softly.assertThat(actualOrder.getQuantity()).as("Oder quantity is not correct!").isEqualTo(expectedOrder.getQuantity());
-            softly.assertThat(actualOrder.getShipDate()).as("Oder Ship Date is not correct!").isEqualTo(expectedOrder.getShipDate());
-            softly.assertThat(actualOrder.getStatus()).as("Oder status is not correct!").isEqualTo(expectedOrder.getStatus());
-            softly.assertThat(actualOrder.getComplete()).as("Oder Complete is not correct!").isEqualTo(expectedOrder.getComplete());
-        });
     }
 }

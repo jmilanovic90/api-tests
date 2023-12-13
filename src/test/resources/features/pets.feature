@@ -14,5 +14,5 @@ Feature: Pets
 
   Scenario: User is able to place an order for a pet
     Given User adds pet "German Shepherd" to the pet store
-    When  user places order for a pet with quantity of 5 with status placed
+    When  user places an order for a pet with quantity of 5 and status placed
     Then  Order will be placed
