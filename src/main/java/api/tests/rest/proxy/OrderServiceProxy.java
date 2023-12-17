@@ -37,7 +37,6 @@ public class OrderServiceProxy {
     }
 
     public Order getOrder(final Long orderId) {
-
         final Response response = orderRestClient.get(null, String.valueOf(orderId));
         if (response.statusCode() != HttpStatus.SC_OK) {
             throw new FunctionalTestsException("Order not found!. Expected {}, but actual {}. Response message: {}", HttpStatus.SC_OK,

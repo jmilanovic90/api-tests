@@ -28,8 +28,8 @@ public class PetStepdef {
 
     @Given("^[Uu]ser add(?:s|ed) pet \"(.*)\" to the pet store$")
     public void addPet(final String petName) {
-
         final Pet newPet = new Pet();
+
         newPet.setName(petName);
         newPet.setId(ThreadLocalRandom.current().nextLong(Long.MAX_VALUE));
         newPet.setStatus(Pet.StatusEnum.AVAILABLE);

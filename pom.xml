@@ -142,6 +142,26 @@
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>6.0.1</version>
+                <configuration>
+                    <output>${project.build.directory}/generated-sources</output>
+                    <generatorName>java</generatorName>
+                    <generateApis>false</generateApis>
+                    <generateModels>true</generateModels>
+                    <generateApiTests>false</generateApiTests>
+                    <generateApiDocumentation>false</generateApiDocumentation>
+                    <generateModelDocumentation>false</generateModelDocumentation>
+                    <generateModelTests>false</generateModelTests>
+                    <generateSupportingFiles>false</generateSupportingFiles>
+                    <configOptions>
+                        <library>webclient</library>
+                        <dateLibrary>java8</dateLibrary>
+                        <collectionType>list</collectionType>
+                        <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
+                        <!-- library determines annotations on model-classes jackson vs. gson -->
+                        <serializationLibrary>jackson</serializationLibrary>
+                        <sourceFolder>generated</sourceFolder>
+                    </configOptions>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-pet-store-client</id>
@@ -152,25 +172,7 @@
                             <inputSpec>
                                 ${project.basedir}/src/main/resources/clients/pet-store-openapi.yaml
                             </inputSpec>
-                            <generatorName>java</generatorName>
-                            <output>${project.build.directory}/generated-sources</output>
-                            <generateApis>false</generateApis>
-                            <generateModels>true</generateModels>
-                            <generateApiTests>false</generateApiTests>
-                            <generateApiDocumentation>false</generateApiDocumentation>
-                            <generateModelDocumentation>false</generateModelDocumentation>
-                            <generateModelTests>false</generateModelTests>
-                            <generateSupportingFiles>false</generateSupportingFiles>
                             <modelPackage>swagger.pet.store.model</modelPackage>
-                            <configOptions>
-                                <library>webclient</library>
-                                <dateLibrary>java8</dateLibrary>
-                                <collectionType>list</collectionType>
-                                <enumPropertyNaming>UPPERCASE</enumPropertyNaming>
-                                <!-- library determines annotations on model-classes jackson vs. gson -->
-                                <serializationLibrary>jackson</serializationLibrary>
-                                <sourceFolder>generated</sourceFolder>
-                            </configOptions>
                         </configuration>
                     </execution>
                 </executions>
